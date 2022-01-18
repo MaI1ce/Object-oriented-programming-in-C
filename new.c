@@ -7,7 +7,7 @@
 
 void * _new_(const void * _class, ...)
 {
-    const struct _Class_ * class = (const struct _Class_ *)_class;
+    const _Class_ * class = (const _Class_ *)_class;
     void * p = calloc(1, class->size);
 
     if(p){
@@ -18,11 +18,11 @@ void * _new_(const void * _class, ...)
 
           each class in its implementation file has his own initialized _Class_ struct, which is passed to new()
         */
-        * (const struct _Class_ *)p = _class;
+        * (const _Class_ **)p = _class;
         if(class->ctor){
             //initialize variable length set of arguments for constructor
             va_list varlist;
-            va_start(varlist, _class;
+            va_start(varlist, _class);
 
             p = class->ctor(p, &varlist);
 
@@ -37,9 +37,9 @@ void * _new_(const void * _class, ...)
     each object in the begining has a pointer to _Class_ struct
     _Class_ struct has in it pionter to destructor of the class
 */
-void * _delete_(const void * _class_ob)
+void * _delete_(void * _class_ob)
 {
-    const struct _Class_ ** class = _class_ob;
+    const _Class_ ** class = _class_ob;
     if(_class_ob && (*class) && (*class)->dtor){
         (*class)->dtor(_class_ob);
     }

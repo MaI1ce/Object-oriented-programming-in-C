@@ -3,17 +3,19 @@
 
 #include "new.h"
 
-extern const struct _Class_ * _Set_;
-
-struct Set {
+extern const void * Set;
+/*
+extern struct _Set_ ;{
     const void * class;
     int count;
-    static struct Set_item * first_item;
-} Set;
+    struct _Set_item_ * first_item;
+} _Set_;*/
 
 
 void * push(void * set, void * element);
 
 void * pop(void * set);
+
+int get_count(void * set);
 
 #endif

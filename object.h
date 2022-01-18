@@ -1,8 +1,8 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-extern const void * Object;
+#include "new.h"
 
-int different(const void * ob_a, const void * ob_b);
+extern const void * Object;
 
 #endif

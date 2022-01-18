@@ -1,1 +1,4 @@
 array.h
+Makefile
+*.o
+set_test

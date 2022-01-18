@@ -7,40 +7,27 @@
 
 int main(void)
 {
-    void * s = new(Set);
+    void * s = _new_(Set);
 
-/*
-    void * a = new(Object);
-    void * b = new(Object);
-    add(s, a);
-    add(s, b);
-*/
-    /*add returns pointer to an added object*/
-    void * a = add(s, new(Object));
-    void * b = add(s, new(Object));
-    void * c = new(Object);
+    int count = get_count(s);
+    printf("-------------number of items in set: %d\n",count);
 
-    if(contains(s, a) && contains(s, b)){
-        printf(" s contains a and b\n");
-    }
+    push(s, _new_(Object,10));
 
-    if(different(a, add(s,a))){
-        printf("diferent\n");
-    } else {
-        printf("the same \n");
-    }
+    push(s, _new_(Object,11));
 
-    /*drop returns pointer to deleted from set object*/
-    if(contains(s, drop(s, a))){
-        printf("s contains a\n");
-    }else {
-        printf("s does not conatin a\n");
-    }
+    count = get_count(s);
 
-    delete(a);
-    delete(b);
-    delete(c);
-    delete(s);
+    printf("-------------number of items in set: %d\n",count);
+
+    void * a = pop(s);
+
+    count = get_count(s);
+
+    printf("-------------number of items in set: %d\n",count);
+
+    _delete_(s);
+    _delete_(a);
 
     return 0;
 }

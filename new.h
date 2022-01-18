@@ -2,6 +2,11 @@
 #define NEW_H
 
 #include <stdarg.h>
+#include <stdlib.h>
+#include <stddef.h>
+
+#include <stdio.h>
+
 /*
     each object as first member has pointer to _Class_ struct
     which has size of memory needed and pointers to constructor and destructor
