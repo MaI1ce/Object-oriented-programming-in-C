@@ -1,14 +1,19 @@
 #ifndef SET_H
 #define SET_H
 
-extern const void * Set;
+#include "new.h"
 
-void * add(void * set, void * element);
+extern const struct _Class_ * _Set_;
 
-void * drop(void * set, void * element);
+struct Set {
+    const void * class;
+    int count;
+    static struct Set_item * first_item;
+} Set;
 
-void * find(void * set, void * element);
 
-int contain(void * set, void * element);
+void * push(void * set, void * element);
+
+void * pop(void * set);
 
 #endif

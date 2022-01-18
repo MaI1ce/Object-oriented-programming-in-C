@@ -1,8 +1,7 @@
 #ifndef NEW_H
 #define NEW_H
 
-//#include <stdarg.h>
-//#include <stdlib.h>
+#include <stdarg.h>
 /*
     each object as first member has pointer to _Class_ struct
     which has size of memory needed and pointers to constructor and destructor
@@ -11,7 +10,7 @@
 */
 #include "class.h"
 
-void * _new_(const void * _class, int argc, ...);
+void * _new_(const void * _class, ...);
 
 void * _delete_ (void * item);
 
