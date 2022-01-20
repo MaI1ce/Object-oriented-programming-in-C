@@ -10,4 +10,6 @@ typedef struct _Class_ {
     void * vtbl; //pointer to virtual methods table
 } _Class_;
 
+//#include "cldef.h"
+
 #endif

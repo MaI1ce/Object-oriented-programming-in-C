@@ -3,6 +3,11 @@
 
 #include "new.h"
 
-extern const void * Object;
+extern const void * _Object_;
+
+typedef struct Object {
+    const void * class;
+    int index;
+} Object;
 
 #endif

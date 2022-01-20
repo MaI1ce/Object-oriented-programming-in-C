@@ -2,3 +2,4 @@ array.h
 Makefile
 *.o
 set_test
+objects_test

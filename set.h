@@ -3,19 +3,20 @@
 
 #include "new.h"
 
-extern const void * Set;
-/*
-extern struct _Set_ ;{
+extern const void * _Set_;
+
+typedef struct Set {
     const void * class;
     int count;
-    struct _Set_item_ * first_item;
-} _Set_;*/
+    struct Set_item * first_item;
+} Set;
 
 
-void * push(void * set, void * element);
 
-void * pop(void * set);
+void * push(Set * set, void * element);
 
-int get_count(void * set);
+void * pop(Set * set);
+
+int get_count(Set * set);
 
 #endif
