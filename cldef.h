@@ -70,6 +70,16 @@ static void * NAME##_dtor(void * _self)                 \
 
 #define END_DESTRUCTOR(NAME)                            \
     return self;                                        \
-}                                                       \
+}
+
+#define DERIVED_FROM(NAME) NAME * NAME##__;             \
+
+
+#define UP_CAST(TYPE, OB) (OB)->##TYPE##__
+
+#define BASE_CTOR(TYPE, ...)                            \
+self->TYPE##__ = ( TYPE *) _new_(_##TYPE##_ __VA_OPT__(,) __VA_ARGS__);
+
+#define BASE_DTOR(TYPE) _delete_(self->TYPE##__);
 
 #endif

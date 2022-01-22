@@ -15,7 +15,7 @@
 */
 #include "class.h"
 
-void * _new_(const void * _class, ...);
+void * _new_(const _Class_ * _class, ...);
 
 void * _delete_ (void * item);
 
@@ -25,7 +25,7 @@ sequence of tokens replaces the identifier __VA_ARGS__
 If the variable argument has any tokens, then a __VA_OPT__ invocation expands to its argument;
 but if the variable argument does not have any tokens, the __VA_OPT__ expands to nothing
 */
-#define new(type, ...) (type *)_new_(_##type##_ __VA_OPT__(,) __VA_ARGS__)
+#define new(type, ...) ( type *)_new_(_##type##_ __VA_OPT__(,) __VA_ARGS__)
 
 #define delete(ob) _delete_(ob)
 

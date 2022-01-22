@@ -3,3 +3,13 @@ Makefile
 *.o
 set_test
 objects_test
+basic_objects.c
+basic_objects.h
+main.c
+main2.c
+main3.c
+set.c
+set.h
+string
+inherit.c
+inherit_test
