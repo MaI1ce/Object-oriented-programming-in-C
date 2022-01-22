@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-#include <stdio.h>
+//#include <stdio.h>
 
 /*
     each object as first member has pointer to _Class_ struct
@@ -13,9 +13,12 @@
 
     each class in its implementation file has his own initialized _Class_ struct, which is passed to new()
 */
+/*#ifndef CLDEF_H
 #include "class.h"
+#endif
+*/
 
-void * _new_(const _Class_ * _class, ...);
+void * _new_(const void * _class, ...);
 
 void * _delete_ (void * item);
 

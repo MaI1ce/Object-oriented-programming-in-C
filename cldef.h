@@ -1,21 +1,31 @@
 #ifndef CLDEF_H
 #define CLDEF_H
 
-#define CLASS_DECLARATION(NAME) typedef struct NAME {   \
-    const void * class;                                 \
+#ifndef NEW_H
+#include "class.h"
+#endif
+
+#define CLASS_DECLARATION(NAME) typedef struct NAME##_ {\
 
 
 #define END_CLASS_DECLARATION(NAME)                     \
+} NAME##_;                                              \
+                                                        \
+typedef struct NAME {                                   \
+    const _Class_ * class;                              \
+    NAME##_  data;                                      \
 } NAME;                                                 \
+                                                        \
 extern const void * _##NAME##_ ;                        \
                                                         \
-void wrapper_##NAME##_ctor(NAME * _self, ...);          \
+void wrapper_##NAME##_ctor(NAME##_ * _self, ...);       \
                                                         \
 void wrapper_##NAME##_dtor(NAME * _self);               \
 
 
 #define CTOR(NAME, self, ...)                           \
-wrapper_##NAME##_ctor(&self __VA_OPT__(,) __VA_ARGS__)
+self.class = _##NAME##_;                                \
+wrapper_##NAME##_ctor(&(self.data) __VA_OPT__(,) __VA_ARGS__)
 
 #define DTOR(NAME, self)                                \
 wrapper_##NAME##_dtor(&self)
@@ -25,7 +35,7 @@ wrapper_##NAME##_dtor(&self)
                                                         \
 static void * NAME##_ctor(void * _self, va_list * arg); \
                                                         \
-void wrapper_##NAME##_ctor(NAME * _self, ...)           \
+void wrapper_##NAME##_ctor(NAME##_ * _self, ...)        \
 {                                                       \
     va_list varlist;                                    \
     va_start(varlist, _self);                           \
@@ -53,7 +63,7 @@ static void * NAME##_ctor(void * _self, va_list * arg)  \
 {                                                       \
     NAME * self = _self;                                \
     if(self){                                           \
-        self->class = _##NAME##_;                       \
+
 
 
 #define END_CONSTRUCTOR(NAME)                           \
@@ -72,14 +82,13 @@ static void * NAME##_dtor(void * _self)                 \
     return self;                                        \
 }
 
-#define DERIVED_FROM(NAME) NAME * NAME##__;             \
+#define DERIVED_FROM(NAME) NAME##_ NAME##__;            \
 
-
-#define UP_CAST(TYPE, OB) (OB)->##TYPE##__
 
 #define BASE_CTOR(TYPE, ...)                            \
-self->TYPE##__ = ( TYPE *) _new_(_##TYPE##_ __VA_OPT__(,) __VA_ARGS__);
+wrapper_##TYPE##_ctor(&(self->data.TYPE##__) __VA_OPT__(,) __VA_ARGS__) 
 
-#define BASE_DTOR(TYPE) _delete_(self->TYPE##__);
+
+#define BASE_DTOR(TYPE) wrapper_##TYPE##_dtor((TYPE *)self)
 
 #endif

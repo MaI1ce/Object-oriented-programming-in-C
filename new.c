@@ -5,7 +5,14 @@
 
 #endif
 
-void * _new_(const _Class_ * _class, ...)
+typedef struct _Class_ {
+    size_t size;
+    void * (*ctor)(void * self, va_list * varl);
+    void * (*dtor)(void * self);
+    void * vtbl; //pointer to virtual methods table
+} _Class_;
+
+void * _new_(const void * _class, ...)
 {
     const _Class_ * class = _class;
     void * p = calloc(1, class->size);
@@ -18,13 +25,13 @@ void * _new_(const _Class_ * _class, ...)
 
           each class in its implementation file has his own initialized _Class_ struct, which is passed to new()
         */
-        //* (const _Class_ **)p = _class;
+        * (const _Class_ **)p = _class;
         if(class->ctor){
             //initialize variable length set of arguments for constructor
             va_list varlist;
             va_start(varlist, _class);
 
-            p = class->ctor(p, &varlist);
+            class->ctor(p, &varlist);
 
             va_end(varlist);
         }
