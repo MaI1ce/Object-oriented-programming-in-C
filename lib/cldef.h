@@ -1,7 +1,7 @@
 #ifndef CLDEF_H
 #define CLDEF_H
 
-#ifndef NEW_H
+#ifndef CLASS_H
 #include "class.h"
 #endif
 
@@ -12,20 +12,20 @@
 } NAME##_;                                              \
                                                         \
 typedef struct NAME {                                   \
-    const _Class_ * class;                              \
+    RTTI_info * info;                                   \
     NAME##_  data;                                      \
 } NAME;                                                 \
                                                         \
-extern const void * _##NAME##_ ;                        \
                                                         \
-void wrapper_##NAME##_ctor(NAME##_ * _self, ...);       \
+extern const RTTI_info* RTTI_##NAME ;                   \
+                                                        \
+void wrapper_##NAME##_ctor(NAME * _self, ...);          \
                                                         \
 void wrapper_##NAME##_dtor(NAME * _self);               \
 
 
 #define CTOR(NAME, self, ...)                           \
-self.class = _##NAME##_;                                \
-wrapper_##NAME##_ctor(&(self.data) __VA_OPT__(,) __VA_ARGS__)
+wrapper_##NAME##_ctor(&self __VA_OPT__(,) __VA_ARGS__)
 
 #define DTOR(NAME, self)                                \
 wrapper_##NAME##_dtor(&self)
@@ -35,33 +35,29 @@ wrapper_##NAME##_dtor(&self)
                                                         \
 static void * NAME##_ctor(void * _self, va_list * arg); \
                                                         \
-void wrapper_##NAME##_ctor(NAME##_ * _self, ...)        \
+static void * NAME##_dtor(void * _self);                \
+                                                        \
+static RTTI_info NAME##_info = {                        \
+    sizeof(NAME),                                       \
+    NAME##_ctor,                                        \
+    NAME##_dtor,                                        \
+    &NAME##_vtbl                                        \
+};                                                      \
+                                                        \
+const RTTI_info * RTTI_##NAME = &(NAME##_info);         \
+                                                        \
+void wrapper_##NAME##_ctor(NAME * _self, ...)           \
 {                                                       \
+    _self->info = &(NAME##_info);                       \
     va_list varlist;                                    \
     va_start(varlist, _self);                           \
     NAME##_ctor(_self, &varlist);                       \
     va_end(varlist);                                    \
 }                                                       \
                                                         \
-static void * NAME##_dtor(void * _self);                \
-                                                        \
-void wrapper_##NAME##_dtor(NAME * _self)                \
-{                                                       \
-    NAME##_dtor(_self);                                 \
-}                                                       \
-                                                        \
-static const _Class_ _##NAME = {                        \
-    sizeof(NAME),                                       \
-    NAME##_ctor,                                        \
-    NAME##_dtor,                                        \
-    NULL                                                \
-};                                                      \
-                                                        \
-const void * _##NAME##_ = &(_##NAME);                   \
-                                                        \
 static void * NAME##_ctor(void * _self, va_list * arg)  \
 {                                                       \
-    NAME * self = _self;                                \
+    NAME * self = (NAME *)_self;                        \
     if(self){                                           \
 
 
@@ -73,9 +69,15 @@ static void * NAME##_ctor(void * _self, va_list * arg)  \
 
 
 #define DESTRUCTOR(NAME)                                \
+                                                        \
+void wrapper_##NAME##_dtor(NAME * _self)                \
+{                                                       \
+    NAME##_dtor(_self);                                 \
+}                                                       \
+                                                        \
 static void * NAME##_dtor(void * _self)                 \
 {                                                       \
-    NAME * self = _self;                                \
+    NAME * self = (NAME *)_self;                        \
 
 
 #define END_DESTRUCTOR(NAME)                            \
@@ -85,10 +87,22 @@ static void * NAME##_dtor(void * _self)                 \
 #define DERIVED_FROM(NAME) NAME##_ NAME##__;            \
 
 
-#define BASE_CTOR(TYPE, ...)                            \
-wrapper_##TYPE##_ctor(&(self->data.TYPE##__) __VA_OPT__(,) __VA_ARGS__) 
+#define BASE_CTOR(TYPE)                                 \
+TYPE##_ctor(self, arg) 
+
+#define BASE_DTOR(TYPE) TYPE##_dtor(self)
 
 
-#define BASE_DTOR(TYPE) wrapper_##TYPE##_dtor((TYPE *)self)
+#define VTBL_DECLARATION(NAME) typedef struct vtbl_##NAME {
+
+#define END_VTBL_DECLARATION(NAME) } vtbl_##NAME;
+
+#define VTBL_INITIALISATION(NAME)                       \
+static vtbl_##NAME NAME##_vtbl = {
+
+#define END_VTBL_INITIALISATION };
+
+#define VTBL_DERIVED_FROM(BASE, NAME)\
+static vtbl_##BASE NAME##_vtbl = {
 
 #endif

@@ -13,3 +13,4 @@ set.h
 string
 inherit.c
 inherit_test
+build
